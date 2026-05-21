@@ -1,0 +1,35 @@
+#!/bin/bash
+# post-commit hook — 提交后自动生成变更记录到 changelog/
+# 安装: ln -sf ../../hooks/post-commit .git/hooks/post-commit
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+
+# 只在 shucang 仓库自身不执行（避免递归）
+if [ "$REPO_ROOT" = "$HOME/shucang" ]; then
+    exit 0
+fi
+
+# 获取最后一次提交的信息
+LAST_COMMIT=$(git log -1 --pretty=format:"%s")
+LAST_HASH=$(git log -1 --pretty=format:"%h")
+DATE=$(git log -1 --pretty=format:"%cd" --date=short)
+
+# 检查是否有 changelog 目录，没有则跳过
+if [ ! -d "$REPO_ROOT/changelog" ] && [ ! -d "$HOME/shucang/changelog" ]; then
+    exit 0
+fi
+
+# 生成变更记录
+CHANGELOG_DIR="$REPO_ROOT/changelog"
+[ ! -d "$CHANGELOG_DIR" ] && CHANGELOG_DIR="$HOME/shucang/changelog"
+
+# 用简短提交信息做文件名
+SAFE_NAME=$(echo "$LAST_COMMIT" | sed 's/[^a-zA-Z0-9\u4e00-\u9fa5_-]/-/g' | head -c 40)
+OUTPUT_FILE="$CHANGELOG_DIR/$DATE-${LAST_HASH}-${SAFE_NAME}.md"
+
+# 调用 gen-changelog 脚本
+GEN_SCRIPT="$HOME/shucang/scripts/gen-changelog.py"
+if [ -f "$GEN_SCRIPT" ]; then
+    python3 "$GEN_SCRIPT" --commit-range "HEAD~1..HEAD" --output "$OUTPUT_FILE" 2>/dev/null
+    echo "📝 变更记录已生成: $OUTPUT_FILE"
+fi

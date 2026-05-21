@@ -1,0 +1,33 @@
+# 术藏 · 规范提交信息模板
+#
+# 安装方式:
+#   git config --global commit.template /root/shucang/hooks/gitmessage
+#   或项目级:
+#   git config commit.template /root/shucang/hooks/gitmessage
+#
+# 每行前面有 # 的是注释，提交时会被忽略
+
+# ==== 变更类型 ====
+# 🐛 fix:    修复 bug
+# ✨ feat:   新功能
+# ♻️ refactor: 重构
+# 🎨 style:  样式/格式
+# 📝 docs:   文档
+# ⚡ perf:   性能优化
+# 🧪 test:   测试
+# 🔧 chore:  杂项/构建/配置
+# ⏪ revert: 回退
+
+# ==== 格式: <emoji> <type>(<scope>): <简短描述> ====
+# 示例: 🐛 fix(auth): 处理用户名为 null 时的 NPE
+
+# 第一行: 标题 (50 字以内)
+ 
+
+# 第二行: 空行
+
+
+# 第三行起: 详细说明，列出每个改动的要点
+# - 改了哪个文件、哪几行
+# - 为什么改
+# - 影响什么
